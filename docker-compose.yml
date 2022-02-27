@@ -1,0 +1,59 @@
+version: '2'
+services:
+  zookeeper_enrichment:
+    image: confluentinc/cp-zookeeper:5.0.0-beta30
+    hostname: zookeeper_enrichment
+    container_name: zookeeper_enrichment
+    ports:
+      - "2191:2191"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2191
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker-enrichment-1:
+    image: confluentinc/cp-enterprise-kafka:5.0.0-beta30
+    hostname: broker-enrichment-1
+    container_name: broker-enrichment-1
+    depends_on:
+      - zookeeper_enrichment
+    ports:
+      - "9082:9082"
+      - "29082:29082"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper_enrichment:2191'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-enrichment-1:9082,PLAINTEXT_HOST://localhost:29082
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker-enrichment-1:9082
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper_enrichment:2191
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+  broker-enrichment-2:
+    image: confluentinc/cp-enterprise-kafka:5.0.0-beta30
+    hostname: broker-enrichment-2
+    container_name: broker-enrichment-2
+    depends_on:
+      - zookeeper_enrichment
+    ports:
+      - "9085:9085"
+      - "29085:29085"
+    environment:
+      KAFKA_BROKER_ID: 4
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper_enrichment:2191'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-enrichment-2:9085,PLAINTEXT_HOST://localhost:29085
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker-enrichment-2:9085
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper_enrichment:2191
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+

@@ -1,0 +1,22 @@
+schema:
+  regsitry:
+    url: ${SCHEMA_REGISTRY_URL}
+
+consumer:
+  bootstrap-servers: ${CONSUMER_BROKERS_IP}
+account:
+  topic:
+    name: account
+accounttransaction:
+  topic:
+    name: account-transaction
+
+producer:
+  bootstrap-servers: ${PRODUCER_BROKERS_IP}
+account-enrichment:
+  topic:
+    name: account-enrichment
+accounttransaction-enrichment:
+  topic:
+    name: account-transaction-enrichment
+
